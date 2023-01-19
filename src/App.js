@@ -1,65 +1,31 @@
-import React, { Component } from 'react'
-import firebase from './firebase';
-import { getAuth, signInWithPhoneNumber } from "firebase/auth";
+import React from 'react';
+import { BrowserRouter, BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import Dash from './components/Dash';
+import Greet from './components/Greet';
+import EmpListing from './CRUD/EmpListing';
+import EmpCreate from './CRUD/EmpCreate';
+import EmpDetails from './CRUD/EmpDetails';
+import EmpEdit from './CRUD/EmpEdit';
 
-export class App extends Component {
-  handleChange=(e)=>{
-    const {name, value} = e.target
-    this.setState({
-      [name]: value
-    })
-  }
-  configureCaptcha =()=>{
-    window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('sign-in-button', {
-      'size': 'invisible',
-      'callback': (response) => {
-        // reCAPTCHA solved, allow signInWithPhoneNumber.
-        this.onSignInSubmit();
-        console.log("Recaptca varified")
-      },
-      defaultCountry: "IN"
-    });
-  }
-  onSignInSubmit =(e)=>{
-    e.preventDefault();
-    this.configureCaptcha()
-    const phoneNumber = this.state.mobile
-    console.log(phoneNumber)
-    
-    const appVerifier = window.recaptchaVerifier;
 
-    const auth = getAuth();
-    signInWithPhoneNumber(auth, phoneNumber, appVerifier)
-    .then((confirmationResult) => {
-      // SMS sent. Prompt user to type the code from the message, then sign the
-      // user in with confirmationResult.confirm(code).
-      window.confirmationResult = confirmationResult;
-      console.log("OTP has been sent")
-      // ...
-    }).catch((error) => {
-      // Error; SMS not sent
-      // ...
-      console.log("SMS not sent")
-    });
-  }
-  render() {
-    return (
-      <>
-      <h2>Login Form</h2>
-      <form onSubmit={this.onSignInSubmit}>
-        <div id='sign-in-button'></div>
-      <input type='number' name='mobile' placeholder='Mobile number' required onChange={this.handleChange}/>
-      <button type='submit'>Submit</button>
-      </form>
-
-      <h2>OTP Form</h2>
-      <form>
-      <input type='number' name='otp' placeholder='OTP number' required onChange={this.handleChange}/>
-      <button type='submit'>Submit</button>
-      </form> 
-      </>
-    )
-  }
+function App() {
+  return (
+    <>
+    {/* <h2>API calling using ReactJs</h2>\ */}
+    {/* <Greet/> */}
+    {/* <Dash/> */}
+    {/* <Navbar/> */}
+    <h2 className='text-center'>CRUD operations using ReactJs</h2>
+   <BrowserRouter>
+    <Routes>
+      <Route path='/' element={<EmpListing/>}/>
+      <Route path='/employee/create' element={<EmpCreate/>}/>
+      <Route path='/employee/details/:empid' element={<EmpDetails/>}/>
+      <Route path='/employee/edit/:empid' element={<EmpEdit/>}/>
+    </Routes>
+   </BrowserRouter>
+    </>
+  )
 }
 
 export default App
